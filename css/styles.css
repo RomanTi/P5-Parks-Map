@@ -3,9 +3,11 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
 #map {
   height: 100%;
 }
+
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
@@ -26,7 +28,6 @@ html, body {
     font-size: 15px;
     color: #818181;
     display: block;
-    transition: 0.1s;
     cursor: pointer;
     z-index: 2;
 }
@@ -41,8 +42,6 @@ html, body {
 .delim {
   height: 30px;
 }
-
-
 
 /* When you mouse over the navigation links, change their color */
 .sidenav a:hover, .offcanvas a:focus{
@@ -70,10 +69,6 @@ html, body {
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-@media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-}
 
 .openbtn {
     padding: 10px;

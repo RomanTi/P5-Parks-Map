@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Ontario Backcountry Camping Privincial Parks</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/libs/jquery.min.js"></script>
     <script src="js/libs/knockout-3.4.0.js"></script>
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFTmBw8vRehjAxCTJ8BUf44NcH1yrzYlY">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFTmBw8vRehjAxCTJ8BUf44NcH1yrzYlY">
     </script>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <input type="search" name="Search" class="input" id="input" placeholder="Search..." data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
-    <a class="delim"></a>
-    <ul data-bind="foreach: filteredParks">
-      <li data-bind="text: title, click: $root.markerClick"></li>
-    <ul>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <input type="search" name="Search" class="input" id="input" placeholder="Search..." data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+        <a class="delim"></a>
+        <ul data-bind="foreach: filteredParks">
+            <li data-bind="text: title, click: $root.markerClick"></li>
+        </ul>
     </div>
-    <img src="img/search.svg" class="openbtn" onclick="openNav()">
+    <img src="img/search.svg" class="openbtn" onclick="openNav()" alt="searchIcon">
     <div id="map"></div>
     <script src="js/script.js"></script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFTmBw8vRehjAxCTJ8BUf44NcH1yrzYlY" async defer></script> -->
+</body>
 
-  </body>
 </html>
