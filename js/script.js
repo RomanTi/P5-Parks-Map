@@ -164,6 +164,8 @@ var initParks = [{
 }];
 
 
+var googleSuccess = function() {
+
 function AppViewModel() {
   var self = this;
   var currentMarker = null;
@@ -185,6 +187,8 @@ function AppViewModel() {
 
   initMap();
 
+  //self.initmap = new initMap();
+
   //Park object is used to create the marker and populate the infowindow
 
   var Park = function(park, map) {
@@ -192,7 +196,7 @@ function AppViewModel() {
     this.location = park.location;
     this.id = park.id;
 
-    var previousInfoWindow;
+    
     var marker = new google.maps.Marker({
       position: park.location,
       title: park.title,
@@ -202,11 +206,21 @@ function AppViewModel() {
       icon: markerIcon
     });
 
+    function infowindowsetContent(apidata, infowindow) {
+      infowindow.setContent("<div><strong>" + marker.title + "</strong></div><hr>" + "<div><strong>Year Established: </strong>" + initParks[marker.id].year + "</div>" +
+        "<div><strong>Size: </strong>" + initParks[marker.id].size + " ha</div>" + "<div><strong>Current Weather: </strong>" + apidata);
+      infowindow.open(map, marker);
+      infowindow.addListener("closeclick", function() {
+        infowindow.marker = null;
+        marker.setAnimation(null);
+      });
+    }
+
     function populateInfoWindow(marker, infowindow) {
       // Check to make sure the infowindow is not already opened on this marker.
       if (infowindow.marker != marker) {
         // Current marker is stored to reset the animation
-        if (currentMarker != null) {
+        if (currentMarker !== null) {
           currentMarker.setAnimation(null);
         }
         currentMarker = marker;
@@ -222,29 +236,27 @@ function AppViewModel() {
         };
 
         // Function to infowindow the window
-        function infowindowsetContent(apidata) {
 
-          infowindow.setContent("<div><strong>" + marker.title + "</strong></div><hr>" + "<div><strong>Year Established: </strong>" + initParks[marker.id].year + "</div>" +
-            "<div><strong>Size: </strong>" + initParks[marker.id].size + " ha</div>" + "<div><strong>Current Weather: </strong>" + apidata);
-          infowindow.open(map, marker);
-          infowindow.addListener("closeclick", function() {
-            infowindow.marker = null;
-            marker.setAnimation(null);
-          });
-        }
         // Populating the infowindow and receiving the weather data with error handling
+        var weatherdata;
         $.ajax({
           url: weatherUrl,
           dataType: "json",
           success: function(data) {
-            weather.description = data.weather[0].description;
-            weather.temperature = data.main.temp;
-            var apidata = String(weather.description + ", " + weather.temperature + "C</div>");
-            infowindowsetContent(apidata);
+            if (data.weather.length !== 0){
+              weather.description = data.weather[0].description;
+              weather.temperature = data.main.temp;
+              weatherdata = String(weather.description + ", " + weather.temperature + "C</div><div><em>Powered by OpenWeatherMap</em></div>");
+              infowindowsetContent(weatherdata,infowindow);
+            }
+            else {
+              weatherdata = "No data available </div>";
+            }
+
           },
           error: function(data) {
-            var apidata = "Couldn't load the data </div>";
-            infowindowsetContent(apidata);
+            weatherdata = "Couldn't load the data </div>";
+            infowindowsetContent(weatherdata,infowindow);
           }
         });
       }
@@ -272,29 +284,40 @@ function AppViewModel() {
   // Is used to link the list element to the marker click
   self.markerClick = function(park) {
     google.maps.event.trigger(markers[park.id], "click");
-  }
+  };
 
   // Search implementation
   self.query = ko.observable("");
   self.filteredParks = ko.computed(function() {
-    // Sets all the markers to invisible
+    // Sets all the markers to invisiblepreviousInfoWindow
     for (var i = 0; i < initParks.length; i++) {
       markers[i].setVisible(false);
-    };
+    }
     var search = self.query().toLowerCase();
 
     var filteredArray = ko.utils.arrayFilter(self.parksList(), function(park) {
       return park.title.toLowerCase().indexOf(search) >= 0;
     });
     // Sets only markers from filteredArray visible
-    for (var i = 0; i < filteredArray.length; i++) {
+    for (i = 0; i < filteredArray.length; i++) {
       markers[filteredArray[i].id].setVisible(true);
     }
     return filteredArray;
   });
 }
 
-ko.applyBindings(new AppViewModel());
+
+ko.applyBindings(AppViewModel());
+
+};
+
+
+
+var googleError = function() {
+  console.log("error");
+  $("#map").append("<h3>Couldn't Load the Map</h3>");
+};
+
 
 
 /* Set the width of the side navigation to 250px */
